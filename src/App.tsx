@@ -1,10 +1,16 @@
 import React from 'react';
+import {Provider} from "react-redux";
 
 import Main from "./pages/Main";
+import configureStore from "./store/store";
 
-const App: React.FC<{}> = () => {
+let store = configureStore();
+
+const App: React.FC = () => {
   return (
-    <Main/>
+      <Provider store={store}>
+          <Main/>
+      </Provider>
   );
 }
 
