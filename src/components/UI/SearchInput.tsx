@@ -2,8 +2,8 @@ import React from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
-import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
+import {Icon} from "@material-ui/core";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -15,26 +15,33 @@ const useStyles = makeStyles((theme: Theme) =>
         input: {
             flex: 1,
             marginLeft: theme.spacing(1),
-
         },
-        iconButton: {
+        icon: {
             padding: 10,
         },
     }),
 );
 
-const SearchInput: React.FC<{}> = () =>  {
+interface IProps {
+    onSearch: (hint: string) => void;
+}
+
+const SearchInput: React.FC<IProps> = ({onSearch}) =>  {
     const classes = useStyles();
 
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        onSearch(event.target.value);
+    };
     return (
         <Paper component="form" className={classes.root}>
+            <Icon className={classes.icon}>
+                <SearchIcon />
+            </Icon>
             <InputBase
                 className={classes.input}
                 placeholder="search"
+                onChange={handleChange}
             />
-            <IconButton type="submit" className={classes.iconButton} aria-label="search">
-                <SearchIcon />
-            </IconButton>
         </Paper>
     );
 }

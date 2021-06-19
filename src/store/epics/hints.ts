@@ -1,32 +1,42 @@
+import {Epic, ofType} from 'redux-observable';
+import {from, throwError} from 'rxjs';
+import {catchError, filter, map, mergeMap, takeUntil, tap} from 'rxjs/operators';
+import axios from "axios";
 
-import { from } from "rxjs";
-import { switchMap, mergeMap, tap } from "rxjs/operators";
+import {GET_HINTS, getHintsSuccess} from "../actions/hints";
+import {IGetHints} from "../../interfaces/hints";
+import {AppState} from "../store";
 
-export const FETCH_REQUEST = "FETCH_REQUEST";
 
-export default function fetchEpic(action$) {
-    return action$.ofType(FETCH_REQUEST).pipe(
-        mergeMap(action => {
-            const { type, method, resource, nextType, body, ...rest } = action;
-            return from(
-                fetch(`https://jsonplaceholder.typicode.com${resource}`, {
-                    method,
-                    body: JSON.stringify(body),
-                    headers: {
-                        "Content-type": "application/json; charset=UTF-8"
-                    }
-                })
-            ).pipe(
-                switchMap(response => response.json()),
-                switchMap(data => {
-                    return from([
-                        {
-                            type: nextType,
-                            data
-                        }
-                    ]);
-                })
-            );
-        })
-    );
+export const hintsEpic: Epic<IGetHints, IGetHints, AppState> = action$ => {
+    return action$.pipe(
+        ofType(GET_HINTS),
+        // debounceTime(1000),
+        mergeMap(
+            (action: IGetHints) => {
+                const CancelToken = axios.CancelToken;
+                const source = CancelToken.source();
+                return from(
+                    axios.request({
+                        url: "https://api.sberauto.com/searcher/suggestHints",
+                        method: 'POST',
+                        data: {
+                            text: action.payload
+                        },
+                        cancelToken: source.token
+                    }),
+                ).pipe(
+                    map(response =>
+                        getHintsSuccess(response.data.data.hints)
+                    ),
+                    takeUntil(
+                        action$.pipe(
+                        filter((action: IGetHints) => action.type === 'GET_HINTS'),
+                        tap(ev => source.cancel('canceled'))
+                    )),
+                    catchError((error) => throwError(error)),
+                )
+            }
+        ),
+    )
 }
