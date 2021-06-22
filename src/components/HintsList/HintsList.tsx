@@ -7,7 +7,7 @@ import {IHint} from "../../interfaces/hints";
 
 
 interface IProps {
-    handleClick: (modelId: number) => void;
+    handleClick: (modelId: number, hint: string) => void;
     list: IHint[]
 }
 
@@ -15,7 +15,7 @@ const HintsList: React.FC<IProps> = ({handleClick, list}) => {
     return (
         <List>
             {list.map((item: IHint) =>
-                <ListItem key={nanoid()} onClick={()=> handleClick(item.model_id)}>
+                <ListItem button key={nanoid()} onClick={()=> handleClick(item.model_id, item.title)}>
                     <ListItemText
                         primary={item.title}
                     />

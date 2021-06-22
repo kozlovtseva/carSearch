@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Dispatch} from "redux";
 import {connect} from "react-redux";
 import {Box, Container, Grid} from "@material-ui/core";
+import { nanoid } from 'nanoid';
 
 import SearchInput from "../components/UI/SearchInput";
 import {AppState} from "../store/store";
@@ -11,6 +12,8 @@ import HintsList from "../components/HintsList/HintsList";
 import {getCars} from "../store/actions/cars";
 import CarsList from "../components/CarsList/CarsList";
 import {ICar} from "../interfaces/cars";
+import {IRecentListItem} from "../interfaces/recent";
+import RecentList from "../components/RecentList/RecentList";
 
 
 interface IProps {
@@ -24,7 +27,17 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
 
     const [carsList, setCarsList] = useState<ICar[]>([]);
     const [hintsList, setHintsList] = useState<IHint[]>([]);
-    const [modelId, setModelId] = useState<number | null>()
+    const [modelId, setModelId] = useState<number | null>(null);
+    const [recentList, setRecentList] = useState<IRecentListItem[]>([]);
+
+    useEffect(() => {
+        if (recentList.length > 0) localStorage.setItem("recent", JSON.stringify(recentList));
+    }, [recentList]);
+
+    useEffect(() => {
+        const list = JSON.parse(localStorage.getItem("recent") as string);
+        if (list?.length > 0) setRecentList(list);
+    }, []);
 
     useEffect(() => {
         setCarsList(cars);
@@ -39,10 +52,27 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
         getHints(hint);
     }
 
-    const handleClick = (modelId: number) => {
+    const handleClick = (modelId: number, hint: string) => {
         setHintsList([]);
         setModelId(modelId);
+        addHintToList(hint);
         getCars(modelId);
+    }
+
+    const addHintToList = (title: string) => {
+        const newRecentHint = {
+            id: nanoid(),
+            title: title
+        };
+        let newList = [...recentList];
+        newList.push(newRecentHint);
+        setRecentList(newList);
+    }
+
+    const removeRecentListItem = (id: string) => {
+        let newRecentList = recentList;
+        newRecentList = newRecentList.filter(item => item.id !== id);
+        setRecentList(newRecentList);
     }
 
     const loadMore = () => {
@@ -52,11 +82,14 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
     return (
         <Container>
             <Box pt={5}>
-                <Grid container spacing={3}>
+                <Grid container spacing={10}>
                     <Grid item xs={6}>
                         <SearchInput onSearch={onSearch}/>
                         {hintsList.length > 0 && <HintsList list={hintsList} handleClick={handleClick}/> }
                         {carsList.length > 0 && <CarsList list={carsList} loadMore={loadMore}/>}
+                    </Grid>
+                    <Grid item xs={5}>
+                        <RecentList removeItem={removeRecentListItem} list={recentList}/>
                     </Grid>
                 </Grid>
             </Box>
