@@ -19,9 +19,8 @@ export const carsReducer: Reducer<CarsState> = (
             let newList = state.list.concat(action.payload)
             state = {
                 ...state,
-                list: newList
+                list: newList,
             };
-            console.log("newList", newList);
             break;
         }
         default: {

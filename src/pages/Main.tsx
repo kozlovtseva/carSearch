@@ -23,7 +23,8 @@ interface IProps {
 const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
 
     const [carsList, setCarsList] = useState<ICar[]>([]);
-    const [hintsList, setHintsList] = useState<IHint[]>([])
+    const [hintsList, setHintsList] = useState<IHint[]>([]);
+    const [modelId, setModelId] = useState<number | null>()
 
     useEffect(() => {
         setCarsList(cars);
@@ -34,13 +35,18 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
     }, [hints]);
 
     const onSearch = (hint: string) => {
-        getHints(hint);
         setCarsList([]);
+        getHints(hint);
     }
 
     const handleClick = (modelId: number) => {
-        getCars(modelId);
         setHintsList([]);
+        setModelId(modelId);
+        getCars(modelId);
+    }
+
+    const loadMore = () => {
+        if (modelId) getCars(modelId);
     }
 
     return (
@@ -49,8 +55,8 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
                 <Grid container spacing={3}>
                     <Grid item xs={6}>
                         <SearchInput onSearch={onSearch}/>
-                        <HintsList list={hintsList} handleClick={handleClick}/>
-                        <CarsList list={carsList} />
+                        {hintsList.length > 0 && <HintsList list={hintsList} handleClick={handleClick}/> }
+                        {carsList.length > 0 && <CarsList list={carsList} loadMore={loadMore}/>}
                     </Grid>
                 </Grid>
             </Box>
@@ -60,7 +66,7 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
 
 const mapStateToProps = ({ hints, cars }: AppState) => ({
     hints: hints.list,
-    cars: cars.list
+    cars: cars.list,
 });
 
 const mapDispatchToProps = (dispatch: Dispatch) => ({

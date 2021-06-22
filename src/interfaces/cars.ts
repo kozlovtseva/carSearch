@@ -4,6 +4,7 @@ export interface IGetCars {
 }
 
 export interface ICar {
+    id: number;
     title: string;
     price: number;
 }

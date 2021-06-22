@@ -1,6 +1,5 @@
-import React from 'react';
+import React, {useCallback, useEffect, useRef} from 'react';
 import {List, ListItem, ListItemText} from "@material-ui/core";
-import { nanoid } from 'nanoid';
 
 import {ICar} from "../../interfaces/cars";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
@@ -20,16 +19,35 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IProps {
-    list: ICar[]
+    list: ICar[];
+    loadMore: () => void;
 }
 
-const CarsList: React.FC<IProps> = ({ list}) => {
+const CarsList: React.FC<IProps> = ({ list, loadMore}) => {
     const classes = useStyles();
+
+    const loader = useRef<HTMLDivElement>(null);
+    const handleObserver = useCallback((entries) => {
+        const target = entries[0];
+        if (target.isIntersecting) {
+            loadMore();
+        }
+    }, [loadMore]);
+
+    useEffect(() => {
+        const option = {
+            root: null,
+            rootMargin: "20px",
+            threshold: 0
+        };
+        const observer = new IntersectionObserver(handleObserver, option);
+        if (loader.current) observer.observe(loader.current);
+    }, [handleObserver]);
 
     return (
         <List className={classes.list}>
             {list.map((item: ICar) =>
-                <ListItem key={nanoid()} >
+                <ListItem key={item.id}>
                     <ListItemText
                         primary={item.title}
                     />
@@ -39,6 +57,7 @@ const CarsList: React.FC<IProps> = ({ list}) => {
                     />
                 </ListItem>
             )}
+            <div ref={loader} />
         </List>
     );
 }

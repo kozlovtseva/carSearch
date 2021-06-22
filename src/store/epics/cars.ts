@@ -7,6 +7,7 @@ import {GET_CARS, getCarsSuccess} from "../actions/cars";
 import {IGetCars} from "../../interfaces/cars";
 
 export const carsEpic: Epic = action$ => {
+    let page = 1;
     return action$.pipe(
         ofType(GET_CARS),
         switchMap(
@@ -16,7 +17,7 @@ export const carsEpic: Epic = action$ => {
                         url: "https://api.sberauto.com/searcher/getCars",
                         method: 'POST',
                         data: {
-                            page: 1,
+                            page: page,
                             per_page: 10,
                             filter: {
                                 catalog: [
@@ -31,12 +32,16 @@ export const carsEpic: Epic = action$ => {
                     map(response => {
                             const carsList = response.data.data.results;
                             let result = [];
-                            for (let i = 0; i < carsList.length; i++) {
-                                result.push({
-                                    title: carsList[i].title,
-                                    price: carsList[i].price
-                                })
+                            if (carsList) {
+                                for (let i = 0; i < carsList.length; i++) {
+                                    result.push({
+                                        id: carsList[i].id,
+                                        title: carsList[i].title,
+                                        price: carsList[i].price
+                                    })
+                                }
                             }
+                            page++;
                             return getCarsSuccess(result)
                         }
                     ),
