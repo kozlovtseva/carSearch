@@ -84,7 +84,10 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
             <Box pt={5}>
                 <Grid container spacing={10}>
                     <Grid item xs={6}>
-                        <SearchInput onSearch={onSearch}/>
+                        <SearchInput
+                            onSearch={onSearch}
+                            placeholder={recentList.length > 0 ? recentList[recentList.length - 1].title : ""}
+                        />
                         {hintsList.length > 0 && <HintsList list={hintsList} handleClick={handleClick}/> }
                         {carsList.length > 0 && <CarsList list={carsList} loadMore={loadMore}/>}
                     </Grid>

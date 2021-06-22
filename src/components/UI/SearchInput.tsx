@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {createStyles, makeStyles, Theme} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
@@ -24,12 +24,20 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IProps {
     onSearch: (hint: string) => void;
+    placeholder: string;
 }
 
-const SearchInput: React.FC<IProps> = ({onSearch}) =>  {
+const SearchInput: React.FC<IProps> = ({onSearch, placeholder}) =>  {
     const classes = useStyles();
 
+    const [value, setValue] = useState<string>("");
+
+    useEffect(() => {
+        setValue(placeholder);
+    }, [placeholder]);
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValue(event.target.value);
         onSearch(event.target.value);
     };
     return (
@@ -39,7 +47,8 @@ const SearchInput: React.FC<IProps> = ({onSearch}) =>  {
             </Icon>
             <InputBase
                 className={classes.input}
-                placeholder="search"
+                placeholder={placeholder}
+                value={value}
                 onChange={handleChange}
             />
         </Paper>
