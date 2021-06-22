@@ -8,13 +8,16 @@ import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        list: {
-            padding: 0,
-        },
         title: {
             fontSize: 26,
             fontWeight: 700
-        }
+        },
+        list: {
+            padding: 0,
+        },
+        listItem: {
+            padding: 0,
+        },
     }),
 );
 
@@ -32,7 +35,7 @@ const HintsList: React.FC<IProps> = ({removeItem, list}) => {
             </Typography>
             <List className={classes.list}>
                 {list.map((item: IRecentListItem) =>
-                    <ListItem key={item.id}>
+                    <ListItem key={item.id} className={classes.listItem}>
                         <ListItemText
                             primary={item.title}
                         />

@@ -35,7 +35,7 @@ const SearchInput: React.FC<IProps> = ({onSearch}) =>  {
     return (
         <Paper component="form" className={classes.root}>
             <Icon className={classes.icon}>
-                <SearchIcon />
+                <SearchIcon color={"disabled"}/>
             </Icon>
             <InputBase
                 className={classes.input}
