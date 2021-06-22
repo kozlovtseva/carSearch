@@ -4,12 +4,10 @@ import {IHint} from "../../interfaces/hints";
 
 export interface HintsState {
     list: IHint[];
-    loading: boolean;
 }
 
-export const initialState: HintsState = {
+const initialState: HintsState = {
     list: [],
-    loading: false
 };
 
 export const hintsReducer: Reducer<HintsState> = (
@@ -20,7 +18,7 @@ export const hintsReducer: Reducer<HintsState> = (
         case GET_HINTS_FULFILLED: {
             state = {
                 ...state,
-                loading: false
+                list: action.payload
             };
             break;
         }

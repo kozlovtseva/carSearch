@@ -8,5 +8,5 @@ export interface IHint {
 
 export interface IGetHints {
     type: string;
-    payload: IHint[] |string;
+    payload: IHint[];
 }

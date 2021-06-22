@@ -5,9 +5,8 @@ import axios, {CancelTokenSource} from "axios";
 
 import {GET_HINTS, getHintsSuccess} from "../actions/hints";
 import {IGetHints} from "../../interfaces/hints";
-import {AppState} from "../store";
 
-export const hintsEpic: Epic<IGetHints, IGetHints, AppState> = action$ => {
+export const hintsEpic: Epic = action$ => {
     let cancelToken:CancelTokenSource;
     return action$.pipe(
         ofType(GET_HINTS),
