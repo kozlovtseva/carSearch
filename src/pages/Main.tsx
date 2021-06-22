@@ -29,6 +29,7 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
     const [hintsList, setHintsList] = useState<IHint[]>([]);
     const [modelId, setModelId] = useState<number | null>(null);
     const [recentList, setRecentList] = useState<IRecentListItem[]>([]);
+    const [value, setValue] = useState<string>("");
 
     useEffect(() => {
         if (recentList.length > 0) localStorage.setItem("recent", JSON.stringify(recentList));
@@ -49,6 +50,7 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
 
     const onSearch = (hint: string) => {
         setCarsList([]);
+        setValue(hint);
         getHints(hint);
     }
 
@@ -88,7 +90,13 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
                             onSearch={onSearch}
                             placeholder={recentList.length > 0 ? recentList[recentList.length - 1].title : ""}
                         />
-                        {hintsList.length > 0 && <HintsList list={hintsList} handleClick={handleClick}/> }
+                        {hintsList.length > 0 &&
+                            <HintsList
+                                list={hintsList}
+                                value={value}
+                                handleClick={handleClick}
+                            />
+                        }
                         {carsList.length > 0 && <CarsList list={carsList} loadMore={loadMore}/>}
                     </Grid>
                     <Grid item xs={5}>
