@@ -1,8 +1,11 @@
-# Getting Started with Create React App
+# Страница поиска
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+React, Redux, redux-observable, TypeScript, MaterialUI
 
-## Available Scripts
+
+
+
+##
 
 In the project directory, you can run:
 
