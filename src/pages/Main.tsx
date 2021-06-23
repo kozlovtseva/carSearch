@@ -29,6 +29,7 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
     const [hintsList, setHintsList] = useState<IHint[]>([]);
     const [modelId, setModelId] = useState<number | null>(null);
     const [recentList, setRecentList] = useState<IRecentListItem[]>([]);
+    const [placeholder, setPlaceholder] = useState<string>("");
     const [value, setValue] = useState<string>("");
 
     useEffect(() => {
@@ -70,6 +71,7 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
         newList.push(newRecentHint);
         if (newList.length > 5) newList.shift();
         setRecentList(newList);
+        setPlaceholder(title);
     }
 
     const removeRecentListItem = (id: string) => {
@@ -89,7 +91,7 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
                     <Grid item xs={6}>
                         <SearchInput
                             onSearch={onSearch}
-                            placeholder={recentList.length > 0 ? recentList[recentList.length - 1].title : ""}
+                            placeholder={placeholder}
                         />
                         {hintsList.length > 0 &&
                             <HintsList
