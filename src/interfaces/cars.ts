@@ -1,6 +1,6 @@
 export interface IGetCars {
     type: string;
-    payload: any;
+    payload: ICar[];
 }
 
 export interface ICar {
