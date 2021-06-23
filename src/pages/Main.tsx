@@ -68,6 +68,7 @@ const Main: React.FC<IProps> = ({getHints, getCars, hints, cars}) => {
         };
         let newList = [...recentList];
         newList.push(newRecentHint);
+        if (newList.length > 5) newList.shift();
         setRecentList(newList);
     }
 

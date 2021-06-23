@@ -20,11 +20,11 @@ const HintsList: React.FC<IProps> = ({handleClick, list, value}) => {
             return <span>{text}</span>
         }
         return (
-            <span>
+            <ListItemText>
                 {text.slice(0, index)}
                 <b style={{color:"#8ae3c2"}}>{text.slice(index, tailIx)}</b>
                 {text.slice(tailIx)}
-            </span>
+            </ListItemText>
         )
     }
     return (
